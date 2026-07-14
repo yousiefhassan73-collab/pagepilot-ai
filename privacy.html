@@ -35,10 +35,11 @@
     <h2>What the extension stores on your device</h2>
     <p>
       Using <code>chrome.storage.local</code>, the extension stores: your chosen AI provider (Groq
-      or OpenAI); your API key; your settings (auto mode, summary language); your license record; a
-      daily usage counter (date, count, last summarized URL); and your saved-summary library (URLs,
-      titles, summaries, key points). This data never leaves your device. You can delete the library
-      at any time from Settings, and removing the extension deletes all of it.
+      or OpenAI); your personal API key (if you add one as a free user); your settings (auto mode,
+      summary language); your license record; a daily usage counter (date, count, last summarized
+      URL); and your saved-summary library (URLs, titles, summaries, key points). This data never
+      leaves your device. You can delete the library at any time from Settings, and removing the
+      extension deletes all of it.
     </p>
 
     <h2>What leaves your device, and when</h2>
@@ -47,10 +48,10 @@
       <li>
         <strong>Summaries and chat → your chosen provider.</strong> When a summary or chat answer is
         generated (by you, or by auto mode when you open an article), the extracted text of the page
-        you are viewing is sent directly from your browser to <code>api.groq.com</code> or
-        <code>api.openai.com</code>, authenticated with your own API key. The provider's processing
-        of that request is governed by their own terms and privacy policy. The developer never sees,
-        proxies, or stores this data.
+        you are viewing is sent directly from your browser to <code>api.groq.com</code> (free users)
+        or <code>api.openai.com</code> (free users who choose OpenAI, or Pro subscribers using
+        PagePilot's key). The provider's processing of that request is governed by their own terms
+        and privacy policy. The developer never sees, proxies, or stores this data.
       </li>
       <li>
         <strong>License activation → Gumroad.</strong> When you click "Activate" in Settings, your
