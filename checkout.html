@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PagePilot AI Pro — Upgrade</title>
+  <link rel="icon" href="https://yousiefhassan73-collab.github.io/pagepilot-ai/icons/icon32.png">
+  <script src="https://gumroad.com/js/gumroad.js"></script>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #111827;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --accent: #6366f1;
+      --accent-2: #f59e0b;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .card {
+      max-width: 420px;
+      width: 100%;
+      background: var(--card);
+      border: 1px solid #1f2937;
+      border-radius: 20px;
+      padding: 32px;
+      text-align: center;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    }
+    .logo {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 16px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, var(--accent), #8b5cf6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+    }
+    h1 { margin: 0 0 8px; font-size: 24px; }
+    .price {
+      font-size: 36px;
+      font-weight: 700;
+      margin: 16px 0 4px;
+    }
+    .price span {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--muted);
+    }
+    .features {
+      text-align: left;
+      margin: 24px 0;
+      padding: 0;
+      list-style: none;
+    }
+    .features li {
+      padding: 8px 0;
+      color: #e2e8f0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+    }
+    .features li::before {
+      content: "✓";
+      color: #34d399;
+      font-weight: 700;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 14px 20px;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      text-decoration: none;
+      color: white;
+      background: linear-gradient(90deg, var(--accent-2), #ea580c);
+      border: none;
+      cursor: pointer;
+      transition: transform 0.15s ease, opacity 0.15s ease;
+    }
+    .btn:hover { transform: scale(1.02); }
+    .btn:active { transform: scale(0.98); }
+    .secure {
+      margin-top: 16px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .hidden { display: none; }
+    #status {
+      margin-top: 16px;
+      font-size: 13px;
+      color: var(--muted);
+      min-height: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo">🚀</div>
+    <h1>PagePilot AI Pro</h1>
+    <p style="color: var(--muted); margin: 0 0 8px;">Unlimited summaries, chat & library</p>
+    <div class="price">$12 <span>one-time</span></div>
+
+    <ul class="features">
+      <li>Unlimited webpage summaries</li>
+      <li>Chat with any article</li>
+      <li>Unlimited saved library</li>
+      <li>Markdown export</li>
+      <li>No daily limits, no upgrade banners</li>
+    </ul>
+
+    <a
+      id="buyBtn"
+      class="btn gumroad-button"
+      href="https://yousiefhassan.gumroad.com/l/pagepilot-ai?wanted=true"
+      data-gumroad-overlay-checkout="true"
+      data-gumroad-single-product="true"
+    >
+      Upgrade to Pro
+    </a>
+
+    <p class="secure">🔒 Secure checkout powered by Gumroad</p>
+    <p id="status"></p>
+  </div>
+
+  <script>
+    (function () {
+      const status = document.getElementById('status');
+      const successPage = 'https://yousiefhassan73-collab.github.io/pagepilot-ai/success.html';
+
+      function setStatus(text) {
+        if (status) status.textContent = text;
+      }
+
+      window.addEventListener('message', function (event) {
+        // Gumroad checkout events come from gumroad.com
+        if (!event.origin.includes('gumroad.com')) return;
+
+        let data;
+        try {
+          data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
+        } catch {
+          return;
+        }
+
+        if (data && data.post_message_name === 'sale') {
+          const purchase = data.purchase || {};
+          const saleId = purchase.id || purchase.sale_id || '';
+          const email = purchase.email || '';
+
+          if (saleId) {
+            setStatus('Purchase complete! Activating Pro…');
+            const params = new URLSearchParams();
+            params.set('sale_id', saleId);
+            if (email) params.set('email', email);
+            window.location.href = successPage + '?' + params.toString();
+          }
+        }
+      });
+
+      // If the user returns to this page without a sale event, show a helpful message.
+      if (window.location.search.includes('returned=1')) {
+        setStatus('Did you finish checkout? Open the PagePilot extension → Settings → paste your sale id.');
+      }
+    })();
+  </script>
+</body>
+</html>

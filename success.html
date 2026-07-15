@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PagePilot AI — Payment Successful</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+      color: #f8fafc;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .card {
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      border-radius: 20px;
+      padding: 40px;
+      max-width: 480px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    }
+    .icon {
+      width: 64px;
+      height: 64px;
+      background: rgba(34, 197, 94, 0.15);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 24px;
+      font-size: 32px;
+    }
+    h1 { font-size: 24px; font-weight: 700; margin-bottom: 12px; }
+    p { color: #94a3b8; line-height: 1.6; margin-bottom: 24px; }
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border-radius: 9999px;
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 24px;
+    }
+    .status.pending { background: rgba(234, 179, 8, 0.15); color: #facc15; }
+    .status.success { background: rgba(34, 197, 94, 0.15); color: #4ade80; }
+    .status.error { background: rgba(239, 68, 68, 0.15); color: #f87171; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 14px 24px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-primary { background: #6366f1; color: white; }
+    .btn-secondary { background: rgba(99, 102, 241, 0.15); color: #a5b4fc; margin-top: 12px; }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="icon">🎉</div>
+    <h1>Payment Successful!</h1>
+    <p>Thank you for subscribing to PagePilot AI Pro. We're finishing the activation now.</p>
+    <div id="status" class="status pending">
+      <span>⏳</span>
+      <span id="statusText">Waiting for extension...</span>
+    </div>
+    <button id="retryBtn" class="btn btn-secondary hidden">Retry activation</button>
+  </div>
+
+  <script>
+    (function () {
+      const params = new URLSearchParams(location.search);
+      const saleId = params.get('sale_id') || params.get('order_id') || params.get('id');
+      const email = params.get('email') || params.get('buyer_email') || '';
+      const statusEl = document.getElementById('status');
+      const statusText = document.getElementById('statusText');
+      const retryBtn = document.getElementById('retryBtn');
+
+      function setStatus(type, text, showRetry = false) {
+        statusEl.className = `status ${type}`;
+        statusText.textContent = text;
+        retryBtn.classList.toggle('hidden', !showRetry);
+      }
+
+      function notifyExtension() {
+        if (!saleId && !email) {
+          setStatus('error', 'Missing sale information. Please contact support.', true);
+          return;
+        }
+        window.postMessage({ source: 'pagepilot-success', type: 'ACTIVATE_PRO', saleId: saleId || '', email }, '*');
+        setStatus('pending', 'Contacting PagePilot extension...');
+      }
+
+      // Notify immediately and again after a short delay (content script may not be ready yet)
+      notifyExtension();
+      setTimeout(notifyExtension, 800);
+      setTimeout(notifyExtension, 2000);
+
+      retryBtn.addEventListener('click', notifyExtension);
+
+      window.addEventListener('message', (event) => {
+        if (event.data?.source !== 'pagepilot-content') return;
+        if (event.data?.type === 'ACTIVATION_RESULT') {
+          if (event.data.ok) {
+            setStatus('success', 'Pro activated! You can close this tab.');
+          } else {
+            setStatus('error', event.data.error || 'Activation failed. Try again or contact support.', true);
+          }
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
