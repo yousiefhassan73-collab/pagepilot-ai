@@ -24,7 +24,7 @@
   </head>
   <body>
     <h1>PagePilot AI — Privacy Policy</h1>
-    <p class="updated">Last updated: July 14, 2026. Applies to PagePilot AI version 1.0.0.</p>
+    <p class="updated">Last updated: July 16, 2026. Applies to PagePilot AI version 1.0.0.</p>
 
     <p>
       PagePilot AI ("the extension") is a Chrome extension that summarizes the webpage you are
@@ -34,36 +34,44 @@
 
     <h2>What the extension stores on your device</h2>
     <p>
-      Using <code>chrome.storage.local</code>, the extension stores: your chosen AI provider (Groq
-      or OpenAI); your personal API key (if you add one as a free user); your settings (auto mode,
-      summary language); your license record; a daily usage counter (date, count, last summarized
-      URL); and your saved-summary library (URLs, titles, summaries, key points). This data never
-      leaves your device. You can delete the library at any time from Settings, and removing the
-      extension deletes all of it.
+      Using <code>chrome.storage.local</code>, the extension stores: your settings (auto mode,
+      summary language); your license record; a device identifier used only for free daily-limit
+      counting; a daily usage counter (date, count, last summarized URL); and your saved-summary
+      library (URLs, titles, summaries, key points). This data never leaves your device. You can
+      delete the library at any time from Settings, and removing the extension deletes all of it.
     </p>
 
     <h2>What leaves your device, and when</h2>
-    <p>Only two kinds of network requests are ever made, both initiated by your actions:</p>
+    <p>Only the following network requests are ever made, each initiated by your actions:</p>
     <ol>
       <li>
-        <strong>Summaries and chat → your chosen provider.</strong> When a summary or chat answer is
-        generated (by you, or by auto mode when you open an article), the extracted text of the page
-        you are viewing is sent directly from your browser to <code>api.groq.com</code> (free users)
-        or <code>api.openai.com</code> (free users who choose OpenAI, or Pro subscribers using
-        PagePilot's key). The provider's processing of that request is governed by their own terms
-        and privacy policy. The developer never sees, proxies, or stores this data.
+        <strong>Summaries and chat → PagePilot backend → OpenAI.</strong> When a summary or chat
+        answer is generated (by you, or by auto mode when you open an article), the extracted text
+        of the page you are viewing is sent from your browser to the PagePilot backend at
+        <code>server-eight-ivory-88.vercel.app</code>. The backend forwards that text to
+        <code>api.openai.com</code> using PagePilot's key and returns the result to you; it does not
+        store article text. OpenAI's processing of that request is governed by their own terms and
+        privacy policy.
       </li>
       <li>
-        <strong>License activation → Gumroad.</strong> When you click "Activate" in Settings, your
-        license key and the product id <code>pagepilot-ai</code> are sent to
-        <code>api.gumroad.com</code> to verify your Pro purchase. Nothing else is sent, and this only
-        happens at activation.
+        <strong>Pro activation → PagePilot backend.</strong> When you subscribe to Pro on Gumroad,
+        the Gumroad <code>sale_id</code> is sent from the post-purchase success page to the PagePilot
+        backend at <code>server-eight-ivory-88.vercel.app</code>. This backend is a small Vercel
+        serverless function backed by Upstash Redis; it only stores the sale/subscription id and
+        activation status needed to verify the subscription. No page content or personal information
+        are sent.
+      </li>
+      <li>
+        <strong>Legacy license-key activation → Gumroad.</strong> The optional manual key entry in
+        Settings sends your license key and the product id <code>pagepilot-ai</code> to
+        <code>api.gumroad.com</code> for verification. This is only used if automatic activation
+        fails.
       </li>
     </ol>
 
     <h2>What the extension does NOT do</h2>
     <ul>
-      <li>No accounts, sign-ups, or identifiers.</li>
+      <li>No accounts, sign-ups, or identifiers beyond the anonymous device id for free-limit counting.</li>
       <li>No telemetry, analytics, crash reporting, or tracking of any kind.</li>
       <li>
         No browsing-history access: the extension only ever reads the single page you currently have
@@ -78,7 +86,7 @@
     <h2>Permissions</h2>
     <p>
       The extension's permissions (sidePanel, storage, activeTab, tabs, scripting, contextMenus, and
-      host access to all URLs, api.groq.com, api.openai.com, and api.gumroad.com) are each required
+      host access to all URLs, api.gumroad.com, and server-eight-ivory-88.vercel.app) are each required
       for the single purpose described above and are used for nothing else.
     </p>
 
@@ -96,8 +104,7 @@
 
     <h2>Contact</h2>
     <p>
-      For questions about this policy, contact the developer through the Chrome Web Store support
-      link or the repository listed on the extension's store page.
+      For questions about this policy, contact Yousief Hassan at <a href="mailto:yousiefhassan073@gmail.com">yousiefhassan073@gmail.com</a> or visit the repository at <a href="https://github.com/yousiefhassan73-collab/pagepilot-ai">https://github.com/yousiefhassan73-collab/pagepilot-ai</a>.
     </p>
   </body>
 </html>
